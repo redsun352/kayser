@@ -1,0 +1,18 @@
+ArkeoSAR MAG-GPR ANR HOTFIX
+
+Problem:
+- Manyetometre sensörü çok sık veri gönderdiği için GPR-benzeri grid işleme, analiz paneli ve OpenGL mesh yenileme ana ekranda her pakette çalışıyordu.
+- Bu da özellikle Android/Termux cihazlarda "Uygulama yanıt vermiyor" hatasına yol açabiliyordu.
+
+Fix:
+- Sensör okuma kabul aralığı sınırladı: 75 ms.
+- UI panel yenileme 180 ms ile sınırlandı.
+- OpenGL mesh yenileme 240 ms ile sınırlandı.
+- Manyetik GPR işleme 650 ms ile sınırlandı.
+- GLSurfaceView sürekli çizimden WHEN_DIRTY moduna alındı.
+- Sensör dinleme hızı GAME yerine UI seviyesine düşürüldü.
+
+Sonuç:
+- Uygulama donmadan çalışmalı.
+- GPR-benzeri analiz korunur ama her sensör paketinde ağır hesap yapmaz.
+- Pil ve işlemci kullanımı azalır.

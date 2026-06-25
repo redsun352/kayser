@@ -7,6 +7,7 @@ import android.opengl.GLES20
 import android.opengl.GLSurfaceView
 import android.os.Build
 import android.os.Bundle
+import android.os.SystemClock
 import android.os.Environment
 import android.os.Vibrator
 import android.view.MotionEvent
@@ -60,6 +61,10 @@ class ScanActivity : AppCompatActivity() {
         private const val DEFAULT_SCAN_METERS = 5
         private const val BLUETOOTH_CONNECT_TIMEOUT_MS = 6000L
         private const val COLORBAR_REFRESH_INTERVAL_MS = 500L
+        private const val MIN_READING_INTERVAL_MS = 75L
+        private const val UI_REFRESH_INTERVAL_MS = 180L
+        private const val MESH_REFRESH_INTERVAL_MS = 240L
+        private const val GPR_REFRESH_INTERVAL_MS = 650L
     }
 
     private lateinit var binding: ActivityScanBinding
@@ -71,6 +76,14 @@ class ScanActivity : AppCompatActivity() {
     private var fallbackHandler: android.os.Handler? = null
     private var fallbackTriggered = false
     private var colorbarHandler: android.os.Handler? = null
+
+    // ANR guard: phone sensors can fire 50-100+ times/sec. Heavy grid, GPR-style
+    // processing and OpenGL mesh rebuilds must not run for every raw sensor packet.
+    private var lastAcceptedReadingMs = 0L
+    private var lastUiRefreshMs = 0L
+    private var lastMeshRefreshMs = 0L
+    private var lastGprRefreshMs = 0L
+    private var lastGprSummary: MagneticGprProcessor.GprSummary? = null
 
     private var currentFunction: DisplayFunction = DisplayFunction.XYZ
     private var thresholdFraction: Float = 0f // 0 = show all points, up to 1 = only the very highest band
@@ -115,7 +128,7 @@ class ScanActivity : AppCompatActivity() {
 
         binding.glSurfaceView.setEGLContextClientVersion(2)
         binding.glSurfaceView.setRenderer(renderer)
-        binding.glSurfaceView.renderMode = GLSurfaceView.RENDERMODE_CONTINUOUSLY
+        binding.glSurfaceView.renderMode = GLSurfaceView.RENDERMODE_WHEN_DIRTY
         binding.glSurfaceView.setOnTouchListener { _, event -> handleTouch(event); true }
 
         binding.btnSave.setOnClickListener { saveScan() }
@@ -186,6 +199,7 @@ class ScanActivity : AppCompatActivity() {
                     currentFunction = selected
                     grid.recomputeWithFunction(currentFunction)
                     renderer.invalidateMesh()
+                    binding.glSurfaceView.requestRender()
                 }
             }
             override fun onNothingSelected(parent: android.widget.AdapterView<*>?) {}
@@ -206,6 +220,7 @@ class ScanActivity : AppCompatActivity() {
                 if (selected != com.arkeosar.groundscan.render.AnomalyColorScale.activePalette) {
                     com.arkeosar.groundscan.render.AnomalyColorScale.activePalette = selected
                     renderer.invalidateMesh()
+                    binding.glSurfaceView.requestRender()
                 }
             }
             override fun onNothingSelected(parent: android.widget.AdapterView<*>?) {}
@@ -229,6 +244,7 @@ class ScanActivity : AppCompatActivity() {
                 thresholdFraction = value / 100f
                 grid.thresholdFraction = thresholdFraction
                 renderer.invalidateMesh()
+                binding.glSurfaceView.requestRender()
             }
             override fun onStartTrackingTouch(seekBar: SeekBar?) {}
             override fun onStopTrackingTouch(seekBar: SeekBar?) {}
@@ -423,6 +439,10 @@ class ScanActivity : AppCompatActivity() {
     }
 
     private fun onSourceReading(reading: ScanReading) {
+        val now = SystemClock.elapsedRealtime()
+        if (now - lastAcceptedReadingMs < MIN_READING_INTERVAL_MS && !reading.buttonPressed) return
+        lastAcceptedReadingMs = now
+
         val point = grid.addValue(
             value = reading.value,
             latitude = reading.latitude,
@@ -440,9 +460,20 @@ class ScanActivity : AppCompatActivity() {
         )
         if (point != null) {
             ScanAnalysisEngine.updatePoint(point, grid)
-            MagneticGprProcessor.update(grid)
-            renderer.invalidateMesh()
-            updateAnalysisPanel(reading)
+
+            if (now - lastGprRefreshMs >= GPR_REFRESH_INTERVAL_MS || lastGprSummary == null || reading.buttonPressed) {
+                lastGprSummary = MagneticGprProcessor.update(grid)
+                lastGprRefreshMs = now
+            }
+            if (now - lastMeshRefreshMs >= MESH_REFRESH_INTERVAL_MS || reading.buttonPressed) {
+                renderer.invalidateMesh()
+                binding.glSurfaceView.requestRender()
+                lastMeshRefreshMs = now
+            }
+            if (now - lastUiRefreshMs >= UI_REFRESH_INTERVAL_MS || reading.buttonPressed) {
+                updateAnalysisPanel(reading)
+                lastUiRefreshMs = now
+            }
             if (point.anomalyScore >= 0.78f || reading.buttonPressed) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                     vibrator?.vibrate(android.os.VibrationEffect.createOneShot(28, android.os.VibrationEffect.DEFAULT_AMPLITUDE))
@@ -455,7 +486,7 @@ class ScanActivity : AppCompatActivity() {
 
     private fun updateAnalysisPanel(reading: ScanReading? = null) {
         val summary = ScanAnalysisEngine.summarize(grid)
-        val gpr = MagneticGprProcessor.update(grid)
+        val gpr = lastGprSummary ?: MagneticGprProcessor.update(grid).also { lastGprSummary = it }
         val raw = reading?.rawMagnitude?.let { String.format(Locale.US, "ham %.1f µT", it) } ?: "ham —"
         val delta = reading?.delta?.let { String.format(Locale.US, "Δ %.2f", it) } ?: "Δ —"
         binding.liveReadingText.text = String.format(

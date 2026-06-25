@@ -95,7 +95,7 @@ class InternalSensorSource(private val context: Context) : ScanDataSource {
         listener = sensorListener
 
         processor.reset()
-        val registered = manager.registerListener(sensorListener, magnetometer, SensorManager.SENSOR_DELAY_GAME)
+        val registered = manager.registerListener(sensorListener, magnetometer, SensorManager.SENSOR_DELAY_UI)
         if (!registered) {
             onStateChanged(ScanSourceState.ERROR)
             return
