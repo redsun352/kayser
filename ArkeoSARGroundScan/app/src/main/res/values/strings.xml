@@ -1,0 +1,48 @@
+<resources>
+    <string name="app_name">ArkeoSAR Ground Scan</string>
+
+    <string name="menu_magnetometer">Manyetometre</string>
+    <string name="menu_ground_scan">3 Boyutlu Zemin Tarama</string>
+    <string name="menu_settings">Ayarlar</string>
+    <string name="menu_files">Kayıtlı Taramalar</string>
+
+    <string name="settings_title">Tarama Ayarları</string>
+    <string name="settings_area_meters">Tarama Alanı (metre)</string>
+    <string name="settings_auto_mode">Otomatik Mod</string>
+    <string name="settings_zigzag">Zigzag Tarama Deseni</string>
+    <string name="settings_save">Kaydet</string>
+    <string name="settings_source_info">Tarama, önce harici OKM cihazına bağlanmayı dener; cihaz bulunamazsa otomatik olarak telefonun dahili sensörüne geçer.</string>
+
+    <string name="scan_connect">Cihaza Bağlanılıyor…</string>
+    <string name="scan_connected">Bağlandı</string>
+    <string name="scan_disconnected">Bağlantı Kesildi</string>
+    <string name="scan_no_device">OKM Rover cihazı bulunamadı</string>
+    <string name="please_wait">Lütfen Bekleyiniz…</string>
+    <string name="scan_save_dialog_title">Taramayı Kaydet</string>
+    <string name="scan_filename_hint">Dosya adı</string>
+
+    <string name="source_bluetooth_probe">Harici Cihaz</string>
+    <string name="source_internal_sensor">Dahili Sensör</string>
+
+    <string name="tool_ruler">Ölçüm</string>
+    <string name="tool_view_mode">Görünüm Modu</string>
+    <string name="tool_zoom">Yakınlaştır</string>
+    <string name="tool_camera">Ekran Görüntüsü</string>
+    <string name="tool_mode_grid">Izgara Görünümü</string>
+    <string name="tool_mode_wireframe">Tel Kafes Görünümü</string>
+    <string name="tool_mode_surface">Yüzey Görünümü</string>
+    <string name="tool_mode_pointcloud">Nokta Bulutu Görünümü</string>
+    <string name="tool_save">Kaydet</string>
+
+    <string name="interpolation_settings_title">Enterpolasyon Ayarları</string>
+    <string name="function_label">Fonksiyon</string>
+    <string name="threshold_label">Eşik</string>
+    <string name="interpolation_thin_plate">İnce Plaka</string>
+
+    <string name="files_empty">Henüz kayıtlı tarama yok</string>
+    <string name="files_delete">Sil</string>
+    <string name="files_open">Aç</string>
+
+    <string name="permission_bluetooth_required">Bluetooth izni gereklidir</string>
+    <string name="permission_location_required">Bluetooth taraması için konum izni gereklidir</string>
+</resources>

@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background_deep">
+
+    <android.opengl.GLSurfaceView
+        android:id="@+id/glSurfaceView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <!-- Top status bar -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="12dp"
+        android:background="#80141B19">
+
+        <TextView
+            android:id="@+id/statusText"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:textColor="@color/text_primary"
+            android:text="@string/scan_connect" />
+
+        <Button
+            android:id="@+id/btnSave"
+            style="@style/Widget.Material3.Button.TextButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/scan_save_dialog_title" />
+
+    </LinearLayout>
+
+    <!-- Top-right floating toolbar: ruler / view mode / zoom / camera -->
+    <LinearLayout
+        android:id="@+id/topToolbar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top|end"
+        android:layout_marginTop="64dp"
+        android:layout_marginEnd="12dp"
+        android:orientation="horizontal"
+        android:background="@drawable/bg_toolbar_pill">
+
+        <ImageButton
+            android:id="@+id/btnToolRuler"
+            style="@style/ToolbarIconButton"
+            android:src="@drawable/ic_tool_ruler"
+            android:contentDescription="@string/tool_ruler" />
+
+        <ImageButton
+            android:id="@+id/btnToolViewMode"
+            style="@style/ToolbarIconButton"
+            android:src="@drawable/ic_tool_wireframe"
+            android:contentDescription="@string/tool_view_mode" />
+
+        <ImageButton
+            android:id="@+id/btnToolZoom"
+            style="@style/ToolbarIconButton"
+            android:src="@drawable/ic_tool_zoom"
+            android:contentDescription="@string/tool_zoom" />
+
+        <ImageButton
+            android:id="@+id/btnToolCamera"
+            style="@style/ToolbarIconButton"
+            android:src="@drawable/ic_tool_camera"
+            android:contentDescription="@string/tool_camera" />
+
+    </LinearLayout>
+
+    <!-- Left vertical toolbar: render-mode switcher -->
+    <LinearLayout
+        android:id="@+id/leftToolbar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="start|top"
+        android:layout_marginTop="64dp"
+        android:layout_marginStart="8dp"
+        android:orientation="vertical"
+        android:background="@drawable/bg_toolbar_pill">
+
+        <ImageButton
+            android:id="@+id/btnModeGrid"
+            style="@style/ToolbarIconButton"
+            android:src="@drawable/ic_tool_grid"
+            android:contentDescription="@string/tool_mode_grid" />
+
+        <ImageButton
+            android:id="@+id/btnModeWireframe"
+            style="@style/ToolbarIconButton"
+            android:src="@drawable/ic_tool_wireframe"
+            android:contentDescription="@string/tool_mode_wireframe" />
+
+        <ImageButton
+            android:id="@+id/btnModeSurface"
+            style="@style/ToolbarIconButton"
+            android:src="@drawable/ic_tool_surface"
+            android:contentDescription="@string/tool_mode_surface" />
+
+        <ImageButton
+            android:id="@+id/btnModePointCloud"
+            style="@style/ToolbarIconButton"
+            android:src="@drawable/ic_tool_pointcloud"
+            android:contentDescription="@string/tool_mode_pointcloud" />
+
+        <ImageButton
+            android:id="@+id/btnModeSave"
+            style="@style/ToolbarIconButton"
+            android:src="@drawable/ic_tool_save"
+            android:contentDescription="@string/tool_save" />
+
+    </LinearLayout>
+
+    <!-- Colorbar legend, bottom-left -->
+    <com.arkeosar.groundscan.ui.ColorbarView
+        android:id="@+id/colorbarView"
+        android:layout_width="120dp"
+        android:layout_height="220dp"
+        android:layout_gravity="bottom|start"
+        android:layout_marginStart="8dp"
+        android:layout_marginBottom="92dp" />
+
+    <!-- Bottom sheet: Enterpolasyon Ayarları (interpolation settings) -->
+    <LinearLayout
+        android:id="@+id/interpolationPanel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:orientation="vertical"
+        android:background="@color/surface_panel"
+        android:padding="16dp"
+        android:visibility="gone">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/interpolation_settings_title"
+            android:textColor="@color/signal_amber"
+            android:textStyle="bold"
+            android:layout_marginBottom="12dp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="12dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/function_label"
+                android:textColor="@color/text_secondary"
+                android:layout_gravity="center_vertical"
+                android:layout_marginEnd="8dp" />
+
+            <Spinner
+                android:id="@+id/spinnerFunction"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
+
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/threshold_label"
+            android:textColor="@color/text_secondary"
+            android:layout_marginBottom="4dp" />
+
+        <SeekBar
+            android:id="@+id/seekThreshold"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:max="100"
+            android:progress="0" />
+
+    </LinearLayout>
+
+</FrameLayout>
