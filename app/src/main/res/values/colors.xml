@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- ArkeoSAR Ground Scan palette: instrument-panel dark theme,
+         inspired by sonar/magnetometer readouts. Distinct from
+         ArkeoMag's "Thuban Lodestar" but kept in the same visual family. -->
+
+    <color name="background_deep">#0B0F0E</color>
+    <color name="surface_panel">#141B19</color>
+    <color name="surface_panel_raised">#1C2624</color>
+    <color name="grid_line">#23332E</color>
+
+    <color name="signal_amber">#E8A33D</color>
+    <color name="signal_amber_dim">#7A5A26</color>
+    <color name="signal_cyan">#3DD6C7</color>
+    <color name="signal_cyan_dim">#1F6E66</color>
+
+    <color name="anomaly_low">#1C5FA8</color>
+    <color name="anomaly_mid">#2DBE6C</color>
+    <color name="anomaly_high">#E8A33D</color>
+    <color name="anomaly_critical">#E0483B</color>
+
+    <color name="text_primary">#EDEFEE</color>
+    <color name="text_secondary">#8FA39D</color>
+    <color name="text_disabled">#4A5854</color>
+
+    <color name="status_connected">#2DBE6C</color>
+    <color name="status_disconnected">#E0483B</color>
+    <color name="status_pending">#E8A33D</color>
+</resources>

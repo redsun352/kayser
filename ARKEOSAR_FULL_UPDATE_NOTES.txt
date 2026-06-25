@@ -1,0 +1,36 @@
+ArkeoSAR Ground Scan - Kapsamlı Güncelleme
+
+Yapılan ana işler:
+1) Eski referans videodaki canlı tarama mantığı yeni APK kaynak koduna taşındı.
+2) Dahili sensör motoru baştan güçlendirildi:
+   - İlk örneklerde otomatik kalibrasyon
+   - Baseline alma
+   - Drift düzeltme
+   - Adaptif gürültü filtresi
+   - Hassasiyet çarpanı
+   - Anomali skoru
+   - Güven skoru
+   - Hedef yorumu
+3) 2D grid taramada artık değer yanında skor gösterilir.
+4) 3D ekrana canlı analiz paneli eklendi.
+5) Kayıt formatı genişletildi:
+   - rawMagnitude
+   - baseline
+   - delta
+   - anomalyScore
+   - confidence
+   - targetClass
+6) Kayıt sırasında CSV de üretilir.
+
+Derleme notu:
+Bu ortamda Gradle wrapper internetten gradle-8.7-bin.zip indirmeye çalıştığı için assembleDebug doğrulaması tamamlanamadı.
+Kendi bilgisayarında/Termux ortamında internet açıkken:
+
+cd ArkeoSARGroundScan
+./gradlew assembleDebug
+
+Windows için:
+gradlew.bat assembleDebug
+
+APK çıktısı:
+app/build/outputs/apk/debug/app-debug.apk
