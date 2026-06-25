@@ -16,7 +16,7 @@ import java.util.Locale
  */
 object CsvExporter {
 
-    private const val HEADER = "row,col,value,lat,lon,alt,rawX,rawY,rawZ,rawMagnitude,baseline,delta,anomalyScore,confidence,targetClass"
+    private const val HEADER = "row,col,value,lat,lon,alt,rawX,rawY,rawZ,rawMagnitude,baseline,delta,anomalyScore,confidence,targetClass,gprBackgroundRemoved,gprEnvelope,gprMigratedScore,gprLineContinuity,pseudoDepthM"
 
     fun export(grid: ScanGrid, file: File) {
         val sb = StringBuilder()
@@ -37,7 +37,12 @@ object CsvExporter {
             sb.append(p.delta?.let { formatNumber(it) } ?: "").append(',')
             sb.append(formatNumber(p.anomalyScore)).append(',')
             sb.append(formatNumber(p.confidence)).append(',')
-            sb.append(csvText(p.targetClass))
+            sb.append(csvText(p.targetClass)).append(',')
+            sb.append(formatNumber(p.gprBackgroundRemoved)).append(',')
+            sb.append(formatNumber(p.gprEnvelope)).append(',')
+            sb.append(formatNumber(p.gprMigratedScore)).append(',')
+            sb.append(formatNumber(p.gprLineContinuity)).append(',')
+            sb.append(formatNumber(p.pseudoDepthM))
             sb.append('\n')
         }
 

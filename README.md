@@ -223,3 +223,18 @@ Artifacts kısmından indirebilirsin.
 - **.v3d içe aktarma:** OKM'nin orijinal yazılımıyla kaydedilmiş eski
   taramaları açmak istersen, ayrı bir `OkmV3dImporter` sınıfı eklenebilir
   (yalnızca okuma; ArkeoSAR'ın kendi formatından bağımsız).
+
+## Magnetic GPR-style processing update
+
+This build adds a GPR-style workflow for the phone magnetometer. It does not claim to create true GPR radar reflections; instead it processes magnetic grid data using survey-line logic similar to GPR software:
+
+- line/profile based grid acquisition
+- profile background removal
+- gain/envelope style anomaly highlighting
+- lateral continuity scoring for tunnel/corridor-like traces
+- migration-like local focusing
+- pseudo-depth display estimate for visualization
+- CSV and ASGS export fields for the magnetic-GPR metrics
+
+New exported columns:
+`gprBackgroundRemoved`, `gprEnvelope`, `gprMigratedScore`, `gprLineContinuity`, `pseudoDepthM`.

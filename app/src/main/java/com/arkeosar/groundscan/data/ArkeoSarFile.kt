@@ -23,7 +23,7 @@ import java.io.File
 object ArkeoSarFile {
 
     private const val FORMAT_NAME = "ArkeoSAR.GroundScan"
-    private const val FORMAT_VERSION = 3 // v3 adds processed anomaly metadata
+    private const val FORMAT_VERSION = 4 // v4 adds magnetic GPR-style processing metadata
 
     fun save(grid: ScanGrid, file: File, metadata: Map<String, String> = emptyMap()) {
         val root = JSONObject()
@@ -58,6 +58,11 @@ object ArkeoSarFile {
             p.put("anomalyScore", point.anomalyScore.toDouble())
             p.put("confidence", point.confidence.toDouble())
             p.put("targetClass", point.targetClass)
+            p.put("gprBackgroundRemoved", point.gprBackgroundRemoved.toDouble())
+            p.put("gprEnvelope", point.gprEnvelope.toDouble())
+            p.put("gprMigratedScore", point.gprMigratedScore.toDouble())
+            p.put("gprLineContinuity", point.gprLineContinuity.toDouble())
+            p.put("pseudoDepthM", point.pseudoDepthM.toDouble())
             pointsArray.put(p)
         }
         root.put("points", pointsArray)
@@ -93,6 +98,11 @@ object ArkeoSarFile {
             target.anomalyScore = p.optDouble("anomalyScore", 0.0).toFloat()
             target.confidence = p.optDouble("confidence", 0.0).toFloat()
             target.targetClass = p.optString("targetClass", "Normal zemin")
+            target.gprBackgroundRemoved = p.optDouble("gprBackgroundRemoved", 0.0).toFloat()
+            target.gprEnvelope = p.optDouble("gprEnvelope", 0.0).toFloat()
+            target.gprMigratedScore = p.optDouble("gprMigratedScore", 0.0).toFloat()
+            target.gprLineContinuity = p.optDouble("gprLineContinuity", 0.0).toFloat()
+            target.pseudoDepthM = p.optDouble("pseudoDepthM", 0.0).toFloat()
         }
         return grid
     }

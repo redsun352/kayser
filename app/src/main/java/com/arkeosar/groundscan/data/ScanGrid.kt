@@ -52,7 +52,12 @@ data class GridPoint(
     var delta: Float? = null,
     var anomalyScore: Float = 0f,
     var confidence: Float = 0f,
-    var targetClass: String = "Normal zemin"
+    var targetClass: String = "Normal zemin",
+    var gprBackgroundRemoved: Float = 0f,
+    var gprEnvelope: Float = 0f,
+    var gprMigratedScore: Float = 0f,
+    var gprLineContinuity: Float = 0f,
+    var pseudoDepthM: Float = 0f
 ) {
     val hasValue: Boolean get() = !value.isNaN()
     val hasRawAxes: Boolean get() = rawX != null && rawY != null && rawZ != null
@@ -257,6 +262,11 @@ class ScanGrid(
             it.anomalyScore = 0f
             it.confidence = 0f
             it.targetClass = "Normal zemin"
+            it.gprBackgroundRemoved = 0f
+            it.gprEnvelope = 0f
+            it.gprMigratedScore = 0f
+            it.gprLineContinuity = 0f
+            it.pseudoDepthM = 0f
         }
     }
 

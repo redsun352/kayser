@@ -28,6 +28,7 @@ import com.arkeosar.groundscan.render.DisplayFunction
 import com.arkeosar.groundscan.render.HeightmapRenderer
 import com.arkeosar.groundscan.render.RenderMode
 import com.arkeosar.groundscan.processing.ScanAnalysisEngine
+import com.arkeosar.groundscan.processing.MagneticGprProcessor
 import com.arkeosar.groundscan.sensors.InternalSensorSource
 import java.io.File
 import java.io.FileOutputStream
@@ -439,6 +440,7 @@ class ScanActivity : AppCompatActivity() {
         )
         if (point != null) {
             ScanAnalysisEngine.updatePoint(point, grid)
+            MagneticGprProcessor.update(grid)
             renderer.invalidateMesh()
             updateAnalysisPanel(reading)
             if (point.anomalyScore >= 0.78f || reading.buttonPressed) {
@@ -453,6 +455,7 @@ class ScanActivity : AppCompatActivity() {
 
     private fun updateAnalysisPanel(reading: ScanReading? = null) {
         val summary = ScanAnalysisEngine.summarize(grid)
+        val gpr = MagneticGprProcessor.update(grid)
         val raw = reading?.rawMagnitude?.let { String.format(Locale.US, "ham %.1f µT", it) } ?: "ham —"
         val delta = reading?.delta?.let { String.format(Locale.US, "Δ %.2f", it) } ?: "Δ —"
         binding.liveReadingText.text = String.format(
@@ -462,14 +465,18 @@ class ScanActivity : AppCompatActivity() {
             raw,
             delta
         )
-        binding.analysisText.text = "İlerleme %${summary.progressPercent} • ${summary.shortText}"
+        binding.analysisText.text = "İlerleme %${summary.progressPercent} • ${summary.shortText}\n${gpr.shortText}"
         binding.targetText.text = String.format(
             Locale.US,
-            "En güçlü nokta: R%d C%d • skor %%%d • ortalama skor %%%d",
+            "En güçlü nokta: R%d C%d • skor %%%d • ortalama skor %%%d\nGPR odak: R%d C%d • odak %%%d • z~%.1fm",
             summary.strongestRow + 1,
             summary.strongestColumn + 1,
             (summary.strongestScore * 100).toInt(),
-            (summary.averageScore * 100).toInt()
+            (summary.averageScore * 100).toInt(),
+            gpr.strongestRow + 1,
+            gpr.strongestColumn + 1,
+            (gpr.strongestMigratedScore * 100).toInt(),
+            gpr.pseudoDepthM
         )
     }
 
@@ -519,7 +526,7 @@ class ScanActivity : AppCompatActivity() {
         val dir = File(filesDir, "scans").also { it.mkdirs() }
         val filename = "scan_${System.currentTimeMillis()}.asgs"
         val file = File(dir, filename)
-        ArkeoSarFile.save(grid, file, metadata = mapOf("app" to "ArkeoSAR Ground Scan", "analysis" to ScanAnalysisEngine.summarize(grid).shortText))
+        ArkeoSarFile.save(grid, file, metadata = mapOf("app" to "ArkeoSAR Ground Scan", "analysis" to ScanAnalysisEngine.summarize(grid).shortText, "magneticGpr" to MagneticGprProcessor.update(grid).shortText))
         try {
             com.arkeosar.groundscan.data.CsvExporter.export(grid, File(dir, filename.replace(".asgs", ".csv")))
         } catch (_: Exception) {}
